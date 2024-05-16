@@ -9,6 +9,8 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from property_manager import PropertyManager
+
 
 
 class Ui_MainWindow(object):
@@ -120,11 +122,23 @@ class Ui_MainWindow(object):
         self.lbl_project_solt.setText(_translate("MainWindow", "Project solution dir :"))
         self.lbl_linkers.setText(_translate("MainWindow", "Linkers :"))
 
+    def setupApp(self, MainWindow):
+        self.le_include.setText(PropertyManager.getRelPath('SFML-2.6.1/include'))
+        self.le_lib.setText(PropertyManager.getRelPath('SFML-2.6.1/lib'))
+        self.le_bin.setText(PropertyManager.getRelPath('SFML-2.6.1/bin'))
+        self.te_linkers.setText(PropertyManager.getLinkers())
+
+        self.btn_project_solt.clicked.connect(lambda: PropertyManager.updateSoltDir(MainWindow, self.le_project_solt))
+        self.btn_include.clicked.connect(lambda: PropertyManager.updatePath(MainWindow, self.le_include))
+        self.btn_lib.clicked.connect(lambda: PropertyManager.updatePath(MainWindow, self.le_lib))
+        self.btn_bin.clicked.connect(lambda: PropertyManager.updatePath(MainWindow, self.le_bin))
+    
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    ui.setupApp(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
