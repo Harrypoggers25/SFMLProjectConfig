@@ -243,7 +243,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QComboBox" name="comboBox">
+           <widget class="QComboBox" name="cb_linkers">
             <item>
              <property name="text">
               <string>Release</string>
@@ -261,6 +261,13 @@
        </item>
        <item>
         <widget class="QTextEdit" name="te_linkers"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_configure">
+         <property name="text">
+          <string>Confgure SFML Project</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

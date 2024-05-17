@@ -111,15 +111,18 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.lbl_linkers)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.comboBox = QtWidgets.QComboBox(self.frm_linkers)
-        self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.horizontalLayout.addWidget(self.comboBox)
+        self.cb_linkers = QtWidgets.QComboBox(self.frm_linkers)
+        self.cb_linkers.setObjectName("cb_linkers")
+        self.cb_linkers.addItem("")
+        self.cb_linkers.addItem("")
+        self.horizontalLayout.addWidget(self.cb_linkers)
         self.verticalLayout_2.addWidget(self.frm_linkers)
         self.te_linkers = QtWidgets.QTextEdit(self.frm_bottom)
         self.te_linkers.setObjectName("te_linkers")
         self.verticalLayout_2.addWidget(self.te_linkers)
+        self.btn_configure = QtWidgets.QPushButton(self.frm_bottom)
+        self.btn_configure.setObjectName("btn_configure")
+        self.verticalLayout_2.addWidget(self.btn_configure)
         self.verticalLayout.addWidget(self.frm_bottom)
         MainWindow.setCentralWidget(self.wgt_central)
 
@@ -134,15 +137,16 @@ class Ui_MainWindow(object):
         self.lbl_project_solt.setText(_translate("MainWindow", "Project solution dir :"))
         self.lbl_include.setText(_translate("MainWindow", "Include dir :"))
         self.lbl_linkers.setText(_translate("MainWindow", "Linkers :"))
-        self.comboBox.setItemText(0, _translate("MainWindow", "Release"))
-        self.comboBox.setItemText(1, _translate("MainWindow", "Debug"))
+        self.cb_linkers.setItemText(0, _translate("MainWindow", "Release"))
+        self.cb_linkers.setItemText(1, _translate("MainWindow", "Debug"))
+        self.btn_configure.setText(_translate("MainWindow", "Confgure SFML Project"))
 
     def setupApp(self, MainWindow):
         self.pm = PropertyManager()
 
-        self.le_include.setText(self.pm.getRelPath('SFML-2.6.1/include'))
-        self.le_lib.setText(self.pm.getRelPath('SFML-2.6.1/lib'))
-        self.le_bin.setText(self.pm.getRelPath('SFML-2.6.1/bin'))
+        self.le_include.setText(self.pm.getRelPath('SFML-2.6.1\\include'))
+        self.le_lib.setText(self.pm.getRelPath('SFML-2.6.1\\lib'))
+        self.le_bin.setText(self.pm.getRelPath('SFML-2.6.1\\bin'))
         self.te_linkers.setText(self.pm.getLinkers()) #set the initial release linkers
 
         self.btn_project_solt.clicked.connect(lambda: self.pm.updateSoltDir(MainWindow, self.le_project_solt))
@@ -150,8 +154,10 @@ class Ui_MainWindow(object):
         self.btn_lib.clicked.connect(lambda: self.pm.updatePath(MainWindow, self.le_lib))
         self.btn_bin.clicked.connect(lambda: self.pm.updatePath(MainWindow, self.le_bin))
 
-        self.comboBox.currentIndexChanged.connect(lambda: self.te_linkers.setText(self.pm.getLinkers()) if self.comboBox.currentIndex() == 0 else self.te_linkers.setText(self.pm.getDLinkers()))
-        self.te_linkers.textChanged.connect(lambda: self.pm.setLinkers(self.te_linkers) if self.comboBox.currentIndex() == 0 else self.pm.setDLinkers(self.te_linkers))
+        self.cb_linkers.currentIndexChanged.connect(lambda: self.te_linkers.setText(self.pm.getLinkers()) if self.cb_linkers.currentIndex() == 0 else self.te_linkers.setText(self.pm.getDLinkers()))
+        self.te_linkers.textChanged.connect(lambda: self.pm.setLinkers(self.te_linkers) if self.cb_linkers.currentIndex() == 0 else self.pm.setDLinkers(self.te_linkers))
+
+        self.btn_configure.clicked.connect(lambda: self.pm.configureSFML(MainWindow, self.btn_configure, self.le_include.text(), self.le_lib.text(), self.le_bin.text()))
 
 if __name__ == "__main__":
     import sys
