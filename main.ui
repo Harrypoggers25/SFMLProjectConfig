@@ -272,11 +272,31 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
+           <widget class="QCheckBox" name="cb_dependencies">
+            <property name="text">
+             <string>Include dependencies in project directory</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="cb_template">
             <property name="text">
              <string>Create SFML project template</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>

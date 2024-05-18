@@ -54,24 +54,28 @@ class PropertyManager:
         return '\n'.join(self.dlinkers) + '\n'
     
     @staticmethod
-    def insert_line_in_file(file_path, new_line, position):
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-        lines.insert(position, new_line + '\n')
-        
-        with open(file_path, 'w') as file:
-            file.writelines(lines)
+    def copy_to(src_dir, dst_dir):
+        for item in os.listdir(src_dir):
+            src_item = os.path.join(src_dir, item)
+            dst_item = os.path.join(dst_dir, item)
 
-    @staticmethod
-    def find_line_in_file(file_path, line):
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-        return lines.index(line)
+            if os.path.isdir(src_item):
+                shutil.copytree(src_item, dst_item)
+            else:
+                shutil.copy2(src_item, dst_item)
 
-    def configureSFML(self, window: QMainWindow, btn: QPushButton, cb: QCheckBox, include_dir, lib_dir, bin_dir):
+    def configureSFML(self, window: QMainWindow, btn: QPushButton, cb1: QCheckBox, cb2: QCheckBox, include_dir, lib_dir, bin_dir):
         btn.setEnabled (False)
         vcxproj_dir = f'{self.file['dir']}/{self.file['name']}'
         vcxproj_path = f'{vcxproj_dir}/{self.file['name']}.vcxproj'
+
+        if cb1.isChecked():
+            PropertyManager.copy_to(include_dir, vcxproj_dir + '/include')
+            PropertyManager.copy_to(lib_dir, vcxproj_dir + '/lib')
+            include_dir, lib_dir = vcxproj_dir + '/include', vcxproj_dir + '/lib'
+
+        if cb2.isChecked():
+            PropertyManager.copy_to('SFML-2.6.1/template', vcxproj_dir)
 
         with open(vcxproj_path, 'r') as file:
             lines = file.readlines()
@@ -82,6 +86,7 @@ class PropertyManager:
             # Removes duplicates
             if (lines[i].find('<AdditionalIncludeDirectories>') != -1 or 
                 lines[i].find('<AdditionalLibraryDirectories>') != -1 or 
+                lines[i].find('<ClCompile Include="main.cpp" />') != -1 or 
                 lines[i].find('<AdditionalDependencies>') != -1):
                 continue
             if lines[i] == '    </ClCompile>\n':
@@ -99,37 +104,6 @@ class PropertyManager:
             file.writelines(new_lines)
 
         # Copies SFML bin files to project directory
-        for item in os.listdir(bin_dir):
-            src_item = os.path.join(bin_dir, item)
-            dst_item = os.path.join(vcxproj_dir, item)
-
-            if os.path.isdir(src_item):
-                shutil.copytree(src_item, dst_item)
-            else:
-                shutil.copy2(src_item, dst_item)
+        PropertyManager.copy_to(bin_dir, vcxproj_dir)
         
-        if cb.isChecked():
-            with open(f'{vcxproj_dir}/main.cpp', 'w') as file:
-                file.write("""#include <SFML/Graphics.hpp>
-                           
-int main() {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);shape.setFillColor(sf::Color::Green);
-
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-        
-        window.clear();
-        window.draw(shape);
-        window.display();
-    }
-                           
-    return 0;
-}
-""")
-
         window.close()

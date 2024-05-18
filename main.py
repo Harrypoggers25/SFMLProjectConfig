@@ -126,9 +126,14 @@ class Ui_MainWindow(object):
         self.frm_template.setObjectName("frm_template")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frm_template)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.cb_dependencies = QtWidgets.QCheckBox(self.frm_template)
+        self.cb_dependencies.setObjectName("cb_dependencies")
+        self.horizontalLayout_2.addWidget(self.cb_dependencies)
         self.cb_template = QtWidgets.QCheckBox(self.frm_template)
         self.cb_template.setObjectName("cb_template")
         self.horizontalLayout_2.addWidget(self.cb_template)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem1)
         self.verticalLayout_2.addWidget(self.frm_template)
         self.btn_configure = QtWidgets.QPushButton(self.frm_bottom)
         self.btn_configure.setObjectName("btn_configure")
@@ -155,6 +160,7 @@ class Ui_MainWindow(object):
         self.lbl_linkers.setText(_translate("MainWindow", "Linkers :"))
         self.dd_linkers.setItemText(0, _translate("MainWindow", "Release"))
         self.dd_linkers.setItemText(1, _translate("MainWindow", "Debug"))
+        self.cb_dependencies.setText(_translate("MainWindow", "Include dependencies in project directory"))
         self.cb_template.setText(_translate("MainWindow", "Create SFML project template"))
         self.btn_configure.setText(_translate("MainWindow", "Confgure SFML Project"))
 
@@ -174,7 +180,7 @@ class Ui_MainWindow(object):
         self.dd_linkers.currentIndexChanged.connect(lambda: self.te_linkers.setText(self.pm.getLinkers()) if self.dd_linkers.currentIndex() == 0 else self.te_linkers.setText(self.pm.getDLinkers()))
         self.te_linkers.textChanged.connect(lambda: self.pm.setLinkers(self.te_linkers) if self.dd_linkers.currentIndex() == 0 else self.pm.setDLinkers(self.te_linkers))
 
-        self.btn_configure.clicked.connect(lambda: self.pm.configureSFML(MainWindow, self.btn_configure, self.cb_template, self.le_include.text(), self.le_lib.text(), self.le_bin.text()))
+        self.btn_configure.clicked.connect(lambda: self.pm.configureSFML(MainWindow, self.btn_configure, self.cb_dependencies, self.cb_template, self.le_include.text(), self.le_lib.text(), self.le_bin.text()))
 
 if __name__ == "__main__":
     import sys
