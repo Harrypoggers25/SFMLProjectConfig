@@ -79,6 +79,10 @@ class PropertyManager:
         new_lines = []
         r = 0
         for i in range(len(lines)):
+            if (lines[i].find('<AdditionalIncludeDirectories>') != -1 or 
+                lines[i].find('<AdditionalLibraryDirectories>') != -1 or 
+                lines[i].find('<AdditionalDependencies>') != -1):
+                continue
             if lines[i] == '    </ClCompile>\n':
                new_lines.append(f'      <AdditionalIncludeDirectories>{include_dir}</AdditionalIncludeDirectories>\n')
             if lines[i] == '    </Link>\n':
@@ -93,6 +97,8 @@ class PropertyManager:
         with open(vcxproj_path, 'w') as file:
             file.writelines(new_lines)
 
+
+        # Copies SFML bin files to project directory
         for item in os.listdir(bin_dir):
             src_item = os.path.join(bin_dir, item)
             dst_item = os.path.join(vcxproj_dir, item)
