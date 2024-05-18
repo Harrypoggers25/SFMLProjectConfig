@@ -1,6 +1,6 @@
 import os
 import shutil
-from PyQt5.QtWidgets import QFileDialog, QMainWindow, QLineEdit, QTextEdit, QPushButton
+from PyQt5.QtWidgets import QFileDialog, QMainWindow, QLineEdit, QTextEdit, QPushButton, QCheckBox
 
 class PropertyManager:
     def __init__(self):
@@ -68,7 +68,7 @@ class PropertyManager:
             lines = file.readlines()
         return lines.index(line)
 
-    def configureSFML(self, window: QMainWindow, btn: QPushButton, include_dir, lib_dir, bin_dir):
+    def configureSFML(self, window: QMainWindow, btn: QPushButton, cb: QCheckBox, include_dir, lib_dir, bin_dir):
         btn.setEnabled (False)
         vcxproj_dir = f'{self.file['dir']}/{self.file['name']}'
         vcxproj_path = f'{vcxproj_dir}/{self.file['name']}.vcxproj'
@@ -79,6 +79,7 @@ class PropertyManager:
         new_lines = []
         r = 0
         for i in range(len(lines)):
+            # Removes duplicates
             if (lines[i].find('<AdditionalIncludeDirectories>') != -1 or 
                 lines[i].find('<AdditionalLibraryDirectories>') != -1 or 
                 lines[i].find('<AdditionalDependencies>') != -1):
@@ -97,7 +98,6 @@ class PropertyManager:
         with open(vcxproj_path, 'w') as file:
             file.writelines(new_lines)
 
-
         # Copies SFML bin files to project directory
         for item in os.listdir(bin_dir):
             src_item = os.path.join(bin_dir, item)
@@ -107,5 +107,29 @@ class PropertyManager:
                 shutil.copytree(src_item, dst_item)
             else:
                 shutil.copy2(src_item, dst_item)
+        
+        if cb.isChecked():
+            with open(f'{vcxproj_dir}/main.cpp', 'w') as file:
+                file.write("""#include <SFML/Graphics.hpp>
+                           
+int main() {
+    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+    sf::CircleShape shape(100.f);shape.setFillColor(sf::Color::Green);
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+        
+        window.clear();
+        window.draw(shape);
+        window.display();
+    }
+                           
+    return 0;
+}
+""")
 
         window.close()

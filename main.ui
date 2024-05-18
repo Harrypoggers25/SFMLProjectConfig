@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>829</width>
-    <height>376</height>
+    <height>407</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -243,7 +243,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QComboBox" name="cb_linkers">
+           <widget class="QComboBox" name="dd_linkers">
             <item>
              <property name="text">
               <string>Release</string>
@@ -263,9 +263,41 @@
         <widget class="QTextEdit" name="te_linkers"/>
        </item>
        <item>
+        <widget class="QFrame" name="frm_template">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QCheckBox" name="cb_template">
+            <property name="text">
+             <string>Create SFML project template</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="btn_configure">
          <property name="text">
           <string>Confgure SFML Project</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
