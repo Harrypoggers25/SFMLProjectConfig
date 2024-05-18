@@ -1,4 +1,5 @@
 import os
+import shutil
 from PyQt5.QtWidgets import QFileDialog, QMainWindow, QLineEdit, QTextEdit, QPushButton
 
 class PropertyManager:
@@ -67,9 +68,10 @@ class PropertyManager:
             lines = file.readlines()
         return lines.index(line)
 
-    def configureSFML(self, window: QMainWindow, btn: QPushButton, include_path, lib_path, bin_path):
+    def configureSFML(self, window: QMainWindow, btn: QPushButton, include_dir, lib_dir, bin_dir):
         btn.setEnabled (False)
-        vcxproj_path = f'{self.file['dir']}/{self.file['name']}/{self.file['name']}.vcxproj'
+        vcxproj_dir = f'{self.file['dir']}/{self.file['name']}'
+        vcxproj_path = f'{vcxproj_dir}/{self.file['name']}.vcxproj'
 
         with open(vcxproj_path, 'r') as file:
             lines = file.readlines()
@@ -78,9 +80,9 @@ class PropertyManager:
         r = 0
         for i in range(len(lines)):
             if lines[i] == '    </ClCompile>\n':
-               new_lines.append(f'      <AdditionalIncludeDirectories>{include_path}</AdditionalIncludeDirectories>\n')
+               new_lines.append(f'      <AdditionalIncludeDirectories>{include_dir}</AdditionalIncludeDirectories>\n')
             if lines[i] == '    </Link>\n':
-                new_lines.append(f'      <AdditionalLibraryDirectories>{lib_path}</AdditionalLibraryDirectories>\n')
+                new_lines.append(f'      <AdditionalLibraryDirectories>{lib_dir}</AdditionalLibraryDirectories>\n')
                 if r % 2 == 0:
                     new_lines.append(f'      <AdditionalDependencies>{';'.join(self.dlinkers) + ';'}</AdditionalDependencies>\n')
                 else:
@@ -90,5 +92,14 @@ class PropertyManager:
         
         with open(vcxproj_path, 'w') as file:
             file.writelines(new_lines)
-        
+
+        for item in os.listdir(bin_dir):
+            src_item = os.path.join(bin_dir, item)
+            dst_item = os.path.join(vcxproj_dir, item)
+
+            if os.path.isdir(src_item):
+                shutil.copytree(src_item, dst_item)
+            else:
+                shutil.copy2(src_item, dst_item)
+
         window.close()
