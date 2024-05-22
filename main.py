@@ -164,15 +164,32 @@ class Ui_MainWindow(object):
         self.cb_template.setText(_translate("MainWindow", "Create SFML project template"))
         self.btn_configure.setText(_translate("MainWindow", "Confgure SFML Project"))
 
+    def setDisabled(self, b):
+        self.le_include.setDisabled(b)
+        self.le_lib.setDisabled(b)
+        self.le_bin.setDisabled(b)
+        self.btn_include.setDisabled(b)
+        self.btn_lib.setDisabled(b)
+        self.btn_bin.setDisabled(b)
+        self.dd_linkers.setDisabled(b)
+        self.te_linkers.setDisabled(b)
+        self.cb_dependencies.setDisabled(b)
+        self.cb_template.setDisabled(b)
+        self.btn_configure.setDisabled(b)
+
     def setupApp(self, MainWindow):
+        # Disable before project dir input
+        self.setDisabled(True)
+
         self.pm = PropertyManager()
+        self.le_project_solt.textChanged.connect(lambda: self.setDisabled(True) if self.le_project_solt.text() == '' else self.setDisabled(False))
 
         self.le_include.setText(self.pm.getRelPath('SFML-2.6.1\\include'))
         self.le_lib.setText(self.pm.getRelPath('SFML-2.6.1\\lib'))
         self.le_bin.setText(self.pm.getRelPath('SFML-2.6.1\\bin'))
         self.te_linkers.setText(self.pm.getLinkers()) #set the initial release linkers
 
-        self.btn_project_solt.clicked.connect(lambda: self.pm.updateSoltDir(MainWindow, self.le_project_solt))
+        self.btn_project_solt.clicked.connect(lambda: self.pm.updateSoltDir(MainWindow, self.setDisabled, self.le_project_solt))
         self.btn_include.clicked.connect(lambda: self.pm.updatePath(MainWindow, self.le_include))
         self.btn_lib.clicked.connect(lambda: self.pm.updatePath(MainWindow, self.le_lib))
         self.btn_bin.clicked.connect(lambda: self.pm.updatePath(MainWindow, self.le_bin))

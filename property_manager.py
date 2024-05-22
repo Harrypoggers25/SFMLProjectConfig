@@ -33,9 +33,11 @@ class PropertyManager:
             return folderPath.replace('/', '\\')
         return None
     
-    def updateSoltDir(self, window: QMainWindow, textbox: QLineEdit):
+    def updateSoltDir(self, window: QMainWindow, fn_setDisabled, textbox: QLineEdit):
         file = self.getFile(window)
         if file:
+            fn_setDisabled(False)
+
             textbox.setText(file['dir'])
     
     def updatePath(self, window: QMainWindow, textbox: QLineEdit):
@@ -66,8 +68,8 @@ class PropertyManager:
 
     def configureSFML(self, window: QMainWindow, btn: QPushButton, cb1: QCheckBox, cb2: QCheckBox, include_dir, lib_dir, bin_dir):
         btn.setEnabled (False)
-        vcxproj_dir = f'{self.file['dir']}/{self.file['name']}'
-        vcxproj_path = f'{vcxproj_dir}/{self.file['name']}.vcxproj'
+        vcxproj_dir = f'{self.file['dir']}\\{self.file['name']}'
+        vcxproj_path = f'{vcxproj_dir}\\{self.file['name']}.vcxproj'
 
         if cb1.isChecked():
             PropertyManager.copy_to(include_dir, vcxproj_dir + '/include')
@@ -75,7 +77,7 @@ class PropertyManager:
             include_dir, lib_dir = vcxproj_dir + '/include', vcxproj_dir + '/lib'
 
         if cb2.isChecked():
-            PropertyManager.copy_to('SFML-2.6.1/template', vcxproj_dir)
+            PropertyManager.copy_to('SFML-2.6.1\\template', vcxproj_dir)
 
         with open(vcxproj_path, 'r') as file:
             lines = file.readlines()
